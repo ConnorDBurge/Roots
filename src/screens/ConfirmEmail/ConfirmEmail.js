@@ -1,33 +1,42 @@
-import React, { useState } from "react";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import React from "react";
+import { useForm } from "react-hook-form";
 import { StyleSheet, Text, View } from "react-native";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomInput from "../../components/CustomInput/CustomInput";
 
 const ConfirmEmail = () => {
-  const [code, setCode] = useState();
+  const navigation = useNavigation();
+  const { control, handleSubmit } = useForm();
 
-  const onConfirmPressed = () => {
-    console.warn("Confirm");
+  const onConfirmPressed = (data) => {
+    console.log(data);
+    navigation.navigate("Home");
+  };
+
+  const onSignInPressed = () => {
+    navigation.navigate("SignIn");
   };
 
   const onResendCode = () => {
     console.warn("Resend Code");
   };
 
-  const onSignInPressed = () => {
-    console.warn("Sign In");
-  };
-
   return (
     <View style={styles.root}>
       <Text style={styles.title}>Confirm your email</Text>
       <CustomInput
+        control={control}
+        name={"confirmation_code"}
         placeholder={"Confirmation Code"}
-        value={code}
-        setValue={setCode}
+        icon={
+          <MaterialCommunityIcons name="two-factor-authentication" size={24} />
+        }
+        rules={{ required: "Please enter a confirmation code" }}
       />
 
-      <CustomButton onPress={onConfirmPressed} text={"Confirm"} />
+      <CustomButton onPress={handleSubmit(onConfirmPressed)} text={"Confirm"} />
 
       <View style={styles.buttons}>
         <CustomButton
@@ -53,6 +62,7 @@ const styles = StyleSheet.create({
   root: {
     alignItems: "center",
     padding: 20,
+    marginTop: 40,
   },
   title: {
     fontSize: 24,

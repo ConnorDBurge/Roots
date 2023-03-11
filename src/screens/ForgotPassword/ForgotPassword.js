@@ -1,29 +1,36 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomInput from "../../components/CustomInput/CustomInput";
+import { Feather } from "@expo/vector-icons";
+import { useForm } from "react-hook-form";
 
 const ForgotPassword = () => {
-  const [username, setUsername] = useState();
+  const navigation = useNavigation();
+  const { control, handleSubmit } = useForm();
 
-  const onSendPressed = () => {
-    console.warn("Send");
+  const onSendPressed = (data) => {
+    console.log(data);
+    navigation.navigate("ResetPassword");
   };
 
   const onSignInPressed = () => {
-    console.warn("Back to sign in");
+    navigation.navigate("SignIn");
   };
 
   return (
     <View style={styles.root}>
       <Text style={styles.title}>Tell us your username</Text>
       <CustomInput
+        control={control}
+        name={"username"}
         placeholder={"Username"}
-        value={username}
-        setValue={setUsername}
+        icon={<Feather name="user" size={24} />}
+        rules={{ required: "Please enter your username" }}
       />
 
-      <CustomButton onPress={onSendPressed} text={"Send"} />
+      <CustomButton onPress={handleSubmit(onSendPressed)} text={"Send"} />
       <CustomButton
         onPress={onSignInPressed}
         text={"Back to sign in"}
@@ -39,6 +46,7 @@ const styles = StyleSheet.create({
   root: {
     alignItems: "center",
     padding: 20,
+    marginTop: 40,
   },
   title: {
     fontSize: 24,

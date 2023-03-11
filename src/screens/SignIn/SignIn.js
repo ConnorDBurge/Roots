@@ -1,25 +1,29 @@
-import React, { useState } from "react";
-import { StyleSheet, Text, useWindowDimensions, View } from "react-native";
-import { Apple, Facebook, Google, TreeHouse } from "../../../assets/images";
+import { Feather } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { StyleSheet, useWindowDimensions, View } from "react-native";
+import { TreeHouse } from "../../../assets/images";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomInput from "../../components/CustomInput/CustomInput";
 import SocialSignIn from "../../components/SocialSignIn/SocialSignIn";
 
 const SignInScreen = () => {
   const { height } = useWindowDimensions();
-  const [userName, setUserName] = useState();
-  const [password, setPassword] = useState();
+  const navigation = useNavigation();
+  const { control, handleSubmit } = useForm();
 
-  const onSignInPressed = () => {
-    console.warn("Sign In");
+  const onSignInPressed = (data) => {
+    console.log(data);
+    navigation.navigate("Home");
   };
 
   const onForgotPasswordPressed = () => {
-    console.warn("Forgot Password");
+    navigation.navigate("ForgotPassword");
   };
 
   const onSignUpPressed = () => {
-    console.warn("Sign Up");
+    navigation.navigate("SignUp");
   };
 
   return (
@@ -33,24 +37,36 @@ const SignInScreen = () => {
           marginBottom: 45,
         }}
       />
+
       <CustomInput
+        disableError
+        control={control}
+        name={"username"}
         placeholder={"Username"}
-        value={userName}
-        setValue={setUserName}
+        icon={<Feather name="user" size={24} />}
+        rules={{ required: "Please enter your username" }}
       />
       <CustomInput
-        placeholder={"Password"}
-        value={password}
-        setValue={setPassword}
         secure
+        disableError
+        control={control}
+        name={"password"}
+        placeholder={"Password"}
+        icon={<Feather name="lock" size={24} />}
+        rules={{
+          required: "Please enter your password",
+        }}
       />
-      <CustomButton onPress={onSignInPressed} text={"Sign In"} />
+
+      <CustomButton onPress={handleSubmit(onSignInPressed)} text={"Sign In"} />
       <CustomButton
         onPress={onForgotPasswordPressed}
         text={"Forgot password?"}
         type={"tertiary"}
       />
+
       <SocialSignIn />
+
       <CustomButton
         onPress={onSignUpPressed}
         text={"Don't have an account? Create one"}
@@ -66,5 +82,6 @@ const styles = StyleSheet.create({
   root: {
     alignItems: "center",
     padding: 20,
+    marginTop: 50,
   },
 });
