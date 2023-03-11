@@ -1,20 +1,36 @@
-import React, { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { Auth } from "aws-amplify";
+import React from "react";
 import { useForm } from "react-hook-form";
-import { useNavigation } from "@react-navigation/native";
+import { Alert, StyleSheet, Text, View } from "react-native";
+
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomInput from "../../components/CustomInput/CustomInput";
-import { Feather } from "@expo/vector-icons";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const ResetPassword = () => {
+  const { params } = useRoute();
   const navigation = useNavigation();
-  const { control, handleSubmit, watch } = useForm();
+  const { control, handleSubmit, watch } = useForm({
+    defaultValues: { username: params?.username },
+  });
   const password = watch("new_password");
 
-  const onSubmitPressed = (data) => {
-    console.log(data);
-    navigation.navigate("Home");
+  const onSubmitPressed = async ({
+    username,
+    confirmation_code,
+    new_password,
+  }) => {
+    try {
+      await Auth.forgotPasswordSubmit(
+        username,
+        confirmation_code,
+        new_password
+      );
+      navigation.navigate("SignIn");
+    } catch (e) {
+      Alert.alert("Ooops", e.message);
+    }
   };
 
   const onSignInPressed = () => {
@@ -24,6 +40,13 @@ const ResetPassword = () => {
   return (
     <View style={styles.root}>
       <Text style={styles.title}>Reset your password</Text>
+      <CustomInput
+        control={control}
+        name={"username"}
+        placeholder={"Username"}
+        icon={<Feather name="user" size={24} />}
+        rules={{ required: "Please enter your username" }}
+      />
       <CustomInput
         control={control}
         name={"confirmation_code"}

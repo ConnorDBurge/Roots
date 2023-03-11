@@ -1,24 +1,33 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
-import ConfirmEmail from "../screens/ConfirmEmail/ConfirmEmail";
-import ForgotPassword from "../screens/ForgotPassword/ForgotPassword";
+
+import { useAmplify } from "../providers/amplify-authentication";
+import ConfirmEmail from "../screens/Auth/ConfirmEmail";
+import ForgotPassword from "../screens/Auth/ForgotPassword";
 import Home from "../screens/Home/Home";
-import ResetPassword from "../screens/ResetPassword/ResetPassword";
-import SignIn from "../screens/SignIn/SignIn";
-import SignUp from "../screens/SignUp/SignUp";
-const Stack = createNativeStackNavigator();
+import ResetPassword from "../screens/Auth/ResetPassword";
+import SignIn from "../screens/Auth/SignIn";
+import SignUp from "../screens/Auth/SignUp";
 
 const Navigation = () => {
+  const Stack = createNativeStackNavigator();
+  const { user } = useAmplify();
+
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="SignIn" component={SignIn} />
-        <Stack.Screen name="SignUp" component={SignUp} />
-        <Stack.Screen name="ConfirmEmail" component={ConfirmEmail} />
-        <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
-        <Stack.Screen name="ResetPassword" component={ResetPassword} />
-        <Stack.Screen name="Home" component={Home} />
+        {user ? (
+          <Stack.Screen name="Home" component={Home} />
+        ) : (
+          <>
+            <Stack.Screen name="SignIn" component={SignIn} />
+            <Stack.Screen name="SignUp" component={SignUp} />
+            <Stack.Screen name="ConfirmEmail" component={ConfirmEmail} />
+            <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
+            <Stack.Screen name="ResetPassword" component={ResetPassword} />
+          </>
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );

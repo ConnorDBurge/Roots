@@ -1,0 +1,20 @@
+{
+  "staging": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-rootsmobileui-staging-144954-authRole",
+      "UnauthRoleArn": "arn:aws:iam::524929034221:role/amplify-rootsmobileui-staging-144954-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::524929034221:role/amplify-rootsmobileui-staging-144954-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-rootsmobileui-staging-144954-deployment",
+      "UnauthRoleName": "amplify-rootsmobileui-staging-144954-unauthRole",
+      "StackName": "amplify-rootsmobileui-staging-144954",
+      "StackId": "arn:aws:cloudformation:us-east-1:524929034221:stack/amplify-rootsmobileui-staging-144954/fc7b1c50-c01b-11ed-9db3-12e680a9d80b",
+      "AmplifyAppId": "d3odss68u8d36j"
+    },
+    "categories": {
+      "auth": {
+        "RootsMobileUI": {}
+      }
+    }
+  }
+}

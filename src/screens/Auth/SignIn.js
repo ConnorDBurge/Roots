@@ -1,8 +1,10 @@
 import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
+import { Auth } from "aws-amplify";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { StyleSheet, useWindowDimensions, View } from "react-native";
+import { Alert, StyleSheet, useWindowDimensions, View } from "react-native";
+
 import { TreeHouse } from "../../../assets/images";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomInput from "../../components/CustomInput/CustomInput";
@@ -12,10 +14,18 @@ const SignInScreen = () => {
   const { height } = useWindowDimensions();
   const navigation = useNavigation();
   const { control, handleSubmit } = useForm();
+  const [signInLoading, setSignInLoading] = useState(false);
 
-  const onSignInPressed = (data) => {
-    console.log(data);
-    navigation.navigate("Home");
+  const onSignInPressed = async ({ username, password }) => {
+    if (signInLoading) return;
+    setSignInLoading(true);
+    try {
+      await Auth.signIn(username, password);
+    } catch (e) {
+      Alert.alert("Ooops", e.message);
+    }
+    setSignInLoading(false);
+    // navigation.navigate("Home");
   };
 
   const onForgotPasswordPressed = () => {
@@ -58,7 +68,10 @@ const SignInScreen = () => {
         }}
       />
 
-      <CustomButton onPress={handleSubmit(onSignInPressed)} text={"Sign In"} />
+      <CustomButton
+        onPress={handleSubmit(onSignInPressed)}
+        text={signInLoading ? "Signing In" : "Sign In"}
+      />
       <CustomButton
         onPress={onForgotPasswordPressed}
         text={"Forgot password?"}

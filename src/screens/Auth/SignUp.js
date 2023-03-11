@@ -1,8 +1,10 @@
-import { Feather } from "@expo/vector-icons";
+import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import React from "react";
+import { Auth } from "aws-amplify";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { StyleSheet, Text, View } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
+
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomInput from "../../components/CustomInput/CustomInput";
 import SocialSignIn from "../../components/SocialSignIn/SocialSignIn";
@@ -10,11 +12,24 @@ import SocialSignIn from "../../components/SocialSignIn/SocialSignIn";
 const SignUp = () => {
   const navigation = useNavigation();
   const { control, handleSubmit, watch } = useForm();
+  const [signUpLoading, setSignUpLoading] = useState(false);
+
   const password = watch("password");
 
-  const onRegisterPressed = (data) => {
-    console.log(data);
-    navigation.navigate("ConfirmEmail");
+  const onRegisterPressed = async ({ name, username, email, password }) => {
+    if (signUpLoading) return;
+    setSignUpLoading(true);
+    try {
+      await Auth.signUp({
+        username,
+        password,
+        attributes: { preferred_username: username, email, name },
+      });
+      navigation.navigate("ConfirmEmail", { username });
+    } catch (e) {
+      Alert.alert("Ooops", e.message);
+    }
+    setSignUpLoading(false);
   };
 
   const onSignInPressed = () => {
@@ -32,6 +47,18 @@ const SignUp = () => {
   return (
     <View style={styles.root}>
       <Text style={styles.title}>Create an account</Text>
+      <CustomInput
+        control={control}
+        name={"name"}
+        placeholder={"Name"}
+        icon={
+          <MaterialCommunityIcons
+            name="head-dots-horizontal-outline"
+            size={24}
+          />
+        }
+        rules={{ required: "What is your name?" }}
+      />
       <CustomInput
         control={control}
         name={"username"}

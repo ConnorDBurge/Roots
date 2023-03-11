@@ -1,20 +1,22 @@
-import React, { useState } from "react";
+import { Auth } from "aws-amplify";
+import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+
 import CustomButton from "../../components/CustomButton/CustomButton";
-import CustomInput from "../../components/CustomInput/CustomInput";
+import { useAmplify } from "../../providers/amplify-authentication";
 
 const Home = () => {
-  const navigation = useNavigation();
+  const { user } = useAmplify();
+  console.log({ user });
 
-  const onSignInPressed = () => {
-    navigation.navigate("SignIn");
+  const onLogout = async () => {
+    await Auth.signOut();
   };
 
   return (
     <View style={styles.root}>
       <Text style={styles.title}>Welcome Home</Text>
-      <CustomButton onPress={onSignInPressed} text={"Back to sign in"} />
+      <CustomButton onPress={onLogout} text={"Logout"} />
     </View>
   );
 };

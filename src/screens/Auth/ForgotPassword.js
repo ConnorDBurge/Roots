@@ -1,18 +1,24 @@
-import React, { useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { Auth } from "aws-amplify";
+import React from "react";
+import { useForm } from "react-hook-form";
+import { Alert, StyleSheet, Text, View } from "react-native";
+
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomInput from "../../components/CustomInput/CustomInput";
-import { Feather } from "@expo/vector-icons";
-import { useForm } from "react-hook-form";
 
 const ForgotPassword = () => {
   const navigation = useNavigation();
   const { control, handleSubmit } = useForm();
 
-  const onSendPressed = (data) => {
-    console.log(data);
-    navigation.navigate("ResetPassword");
+  const onSendPressed = async ({ username }) => {
+    try {
+      await Auth.forgotPassword(username);
+      navigation.navigate("ResetPassword", { username });
+    } catch (e) {
+      Alert.alert("Ooops", e.message);
+    }
   };
 
   const onSignInPressed = () => {
